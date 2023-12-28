@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_lambda_function" "golang_example_function" {
-  filename         = "lambda.zip"                       # caminho para o código da sua função
+  filename         = "./lambda.zip"                       # caminho para o código da sua função
   function_name    = "golang-example_function"          # nome da sua função Lambda
   role             = aws_iam_role.lambda_role.arn       # ARN da role IAM associada à função
   handler          = "main.handler"                     # o arquivo e a função que será executada (ex: nome_do_arquivo.função)
