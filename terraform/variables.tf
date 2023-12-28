@@ -1,2 +1,6 @@
-variable "access_key" {}
-variable "secret_key" {}
+variable "access_key" {
+    default = "default"
+}
+variable "secret_key" {
+    default = "default"
+}
