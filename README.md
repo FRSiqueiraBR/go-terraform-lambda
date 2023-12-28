@@ -3,10 +3,10 @@
 Esse projeto foi criando apenas com o intuito de estudos.
 
 ## Qual a idéia? 🤯
-Criar uma Lambda utilizando Golang e a arquitetura ARM64. Como a AWS está depreciando o runtime go1.x, decidir fazer o teste utilizando provided.al2 com a arquitetura ARM64.
+Criar uma Lambda utilizando Golang e a arquitetura ARM64. Como a AWS está depreciando o runtime go1.x, decidir fazer o teste utilizando provided.al2023 com a arquitetura ARM64.
 
-## Compilando a Lambda para o runtime provided.al2 e a arquitetura ARM64
-Como foi utilizando o runtime provided.al2 e a arquitetura ARM64, o build do Go tem que ser feito utilizando os seguintes parametros:
+## Compilando a Lambda para o runtime provided.al2023 e a arquitetura ARM64
+Como foi utilizando o runtime provided.al2023 e a arquitetura ARM64, o build do Go tem que ser feito utilizando os seguintes parametros:
 ```
 env GOOS=linux GOARCH=arm64 go build -o bootstrap main.go
 ```
