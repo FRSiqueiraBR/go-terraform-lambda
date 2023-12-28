@@ -45,7 +45,7 @@ jobs:
           path: lambda.zip
           retention-days: 5
 
-  terraform:
+  deploy:
     needs: 
       - build
       - test
