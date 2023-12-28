@@ -3,14 +3,10 @@ name: PR
 on: [pull_request, push]
 
 env:
-  # verbosity setting for Terraform logs
   TF_LOG: INFO
-  # Credentials for deployment to AWS
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACESS_KEY }}
-  # S3 bucket for the Terraform state
   BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
-
 
 jobs:
   test: 
@@ -39,13 +35,10 @@ jobs:
       - name: Build 🏋️
         run: env GOOS=linux GOARCH=arm64 go build -o bootstrap main.go
 
-      - name: List Folder
-        run: ls
-
       - name: Package 🎁
         run: zip lambda.zip bootstrap
 
-      - name: 'Upload Artifact'
+      - name: Upload Artifact 👆
         uses: actions/upload-artifact@v3
         with:
           name: lambda
@@ -65,42 +58,39 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Download lambda.zip
+    - name: Download lambda.zip 👇
       uses: actions/download-artifact@v3
       with:
         name: lambda
         path: ./terraform
-
-    - name: List Folder
-      run: ls
     
-    - name: Setup Terraform
+    - name: Setup Terraform 🤲
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: "1.1.7"
 
-    - name: Terraform init
+    - name: Terraform init 🌛
       id: init
       run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
   
-    - name: Terraform format
+    - name: Terraform format 💁
       id: fmt
       run: terraform fmt -check
 
-    - name: Terraform Validate
+    - name: Terraform Validate 🚦
       id: validate
       run: terraform validate
 
-    - name: Terraform Plan
+    - name: Terraform Plan 🍆
       id: plan
       run: terraform plan -input=false
       continue-on-error: true
 
-    - name: Terraform Plan Status
+    - name: Terraform Plan Status 🚅
       if: steps.plan.outcome == 'failure'
       run: exit 1
 
-    - name: Terraform Apply
+    - name: Terraform Apply 🍎
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
       run: |
         terraform apply -input=false -auto-approve \
