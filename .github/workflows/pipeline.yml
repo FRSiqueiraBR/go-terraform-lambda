@@ -1,10 +1,6 @@
-name: Deploy
+name: PR
 
-on: 
-  push:
-    branches:
-      - main
-      - develop
+on: [pull_request, push]
 
 env:
   # verbosity setting for Terraform logs
@@ -15,28 +11,39 @@ env:
   # S3 bucket for the Terraform state
   BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
 
+
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Go 🤲
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21.5'
+      - name: Set up Go 🤲
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.5'
 
-    - name: Build 🏋️
-      run: go build -v ./...
+      - name: Build 🏋️
+        run: go build -v ./...
 
-    - name: Test 🤘
-      run: go test -v ./...
+      - name: Test 🤘
+        run: go test -v ./...
 
-    - name: Package 🎁
-      run: zip terraform/lambda.zip main.go 
+      - name: List Folder
+        run: ls
 
-  deploy_aws:
+      - name: Package 🎁
+        run: zip lambda.zip main.go 
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: lambda
+          path: lambda.zip
+          retention-days: 5
+
+  terraform:
     needs: build
     runs-on: ubuntu-latest
     defaults:
@@ -46,6 +53,15 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Download lambda.zip
+      uses: actions/download-artifact@v3
+      with:
+        name: lambda
+        path: ./terraform
+
+    - name: List Folder
+      run: ls
     
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -68,39 +84,13 @@ jobs:
       id: plan
       run: terraform plan -input=false
       continue-on-error: true
-    
-    - uses: actions/github-script@v6
-      if: github.event_name == 'pull_request'
-      env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-      with:
-        script: |
-          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-
-          <details><summary>Show Plan</summary>
-
-          \`\`\`\n
-          ${process.env.PLAN}
-          \`\`\`
-
-          </details>
-          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
 
     - name: Terraform Plan Status
       if: steps.plan.outcome == 'failure'
       run: exit 1
 
     - name: Terraform Apply
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
       run: |
         terraform apply -input=false -auto-approve \
         -var="access_key=${{ secrets.AWS_ACCESS_KEY }}" \
