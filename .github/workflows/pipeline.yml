@@ -1,6 +1,6 @@
 name: PR
 
-on: [pull_request]
+on: [pull_request, push]
 
 env:
   # verbosity setting for Terraform logs
@@ -88,3 +88,10 @@ jobs:
     - name: Terraform Plan Status
       if: steps.plan.outcome == 'failure'
       run: exit 1
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+      run: |
+        terraform apply -input=false -auto-approve \
+        -var="access_key=${{ secrets.AWS_ACCESS_KEY }}" \
+        -var="secret_key=${{ secrets.AWS_SECRET_ACESS_KEY }}"
