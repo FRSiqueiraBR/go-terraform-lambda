@@ -33,6 +33,9 @@ jobs:
       - name: Package 🎁
         run: zip terraform/lambda.zip main.go 
 
+      - name: List Folder
+        run: ls terraform
+
   terraform:
     needs: build
     runs-on: ubuntu-latest
