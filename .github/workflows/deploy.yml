@@ -27,15 +27,16 @@ jobs:
       run: zip infra/lambda.zip main.go 
 
   terraform:
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
     
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: 3.0.0
+        terraform_version: "1.1.7"
 
     - name: Terraform fmt
       id: fmt
