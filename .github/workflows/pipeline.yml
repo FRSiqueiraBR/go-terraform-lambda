@@ -91,7 +91,7 @@ jobs:
       run: exit 1
 
     - name: Terraform Apply 🍎
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
       run: |
         terraform apply -input=false -auto-approve \
         -var="access_key=${{ secrets.AWS_ACCESS_KEY }}" \
