@@ -1,6 +1,6 @@
 name: PR
 
-on: [pull_request, push]
+on: [push]
 
 env:
   TF_LOG: INFO
