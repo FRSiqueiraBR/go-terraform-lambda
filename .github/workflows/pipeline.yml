@@ -44,18 +44,17 @@ jobs:
       - name: List Folder
         run: ls
 
-      - name: Package 🎁
-        run: zip lambda.zip bootstrap
-
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
           name: lambda
-          path: lambda.zip
+          path: bootstrap
           retention-days: 5
 
   terraform:
-    needs: build
+    needs: 
+      - build
+      - test
     runs-on: ubuntu-latest
     defaults:
       run:
