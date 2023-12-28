@@ -25,8 +25,6 @@ jobs:
       
       - name: Test 🤘
         run: go test -v ./...
-  
-
 
   build:
     runs-on: ubuntu-latest
@@ -39,7 +37,7 @@ jobs:
           go-version: '1.21.5'
 
       - name: Build 🏋️
-        run: GOARCH=amd64 GOOS=linux go build -o bootstrap main.go
+        run: env GOOS=linux GOARCH=arm64 go build -o bootstrap main.go
 
       - name: List Folder
         run: ls
@@ -55,7 +53,9 @@ jobs:
           retention-days: 5
 
   terraform:
-    needs: build
+    needs: 
+      - build
+      - test
     runs-on: ubuntu-latest
     defaults:
       run:
