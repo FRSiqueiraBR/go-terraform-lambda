@@ -24,7 +24,7 @@ resource "aws_lambda_function" "golang_example_function" {
   memory_size   = 128                          # tamanho da memória alocada à função
   timeout       = 30                           # tempo limite de execução da função em segundos
 
-  source_code_hash = filebase64sha256("lambda.zip")
+  source_code_hash = filebase64sha256("./lambda.zip")
 }
 
 resource "aws_iam_role" "lambda_role" {
