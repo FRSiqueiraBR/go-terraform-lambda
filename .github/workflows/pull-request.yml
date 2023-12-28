@@ -30,9 +30,6 @@ jobs:
       - name: Test 🤘
         run: go test -v ./...
 
-      - name: Package 🎁
-        run: zip lambda.zip main.go 
-
       - name: List Folder
         run: ls
 
@@ -40,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lambda
-          path: lambda.zip
+          path: main.go
           retention-days: 5
 
   terraform:
