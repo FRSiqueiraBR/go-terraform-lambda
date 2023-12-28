@@ -13,6 +13,20 @@ env:
 
 
 jobs:
+  test: 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go 🤲
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.5'
+      
+      - name: Test 🤘
+        run: go test -v ./...
+  
+
 
   build:
     runs-on: ubuntu-latest
@@ -25,16 +39,13 @@ jobs:
           go-version: '1.21.5'
 
       - name: Build 🏋️
-        run: go build -v ./...
-
-      - name: Test 🤘
-        run: go test -v ./...
+        run: GOARCH=amd64 GOOS=linux go build -o bootstrap main.go
 
       - name: List Folder
         run: ls
 
       - name: Package 🎁
-        run: zip lambda.zip main.go 
+        run: zip lambda.zip bootstrap
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
