@@ -20,7 +20,7 @@ resource "aws_lambda_function" "golang_example_function" {
   function_name = "golang-example_function"    # nome da sua função Lambda
   role          = aws_iam_role.lambda_role.arn # ARN da role IAM associada à função
   handler       = "bootstrap"                  # o arquivo e a função que será executada (ex: nome_do_arquivo.função)
-  runtime       = "provided.al2"               # substitua pelo runtime adequado à sua função
+  runtime       = "provided.al2023"            # substitua pelo runtime adequado à sua função
   architectures = ["arm64"]                    # arquitetura arm
   memory_size   = 128                          # tamanho da memória alocada à função
   timeout       = 30                           # tempo limite de execução da função em segundos
