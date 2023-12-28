@@ -33,11 +33,14 @@ jobs:
       - name: List Folder
         run: ls
 
+      - name: Package 🎁
+        run: zip lambda.zip main.go 
+
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
           name: lambda
-          path: main.go
+          path: lambda.zip
           retention-days: 5
 
   terraform:
