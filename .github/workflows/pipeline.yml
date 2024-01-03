@@ -97,9 +97,13 @@ jobs:
         -var="access_key=${{ secrets.AWS_ACCESS_KEY }}" \
         -var="secret_key=${{ secrets.AWS_SECRET_ACESS_KEY }}"
 
-    - name: Terraform Destroy 💣
+    - name: Wait 🕑
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
       uses: trstringer/manual-approval@v1
       timeout-minutes: 5
+    
+    - name: Terraform Destroy 💣
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
       run: |
         terraform destroy -input=false -auto-approve \
         -var="access_key=${{ secrets.AWS_ACCESS_KEY }}" \
