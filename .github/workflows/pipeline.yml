@@ -97,10 +97,24 @@ jobs:
         -var="access_key=${{ secrets.AWS_ACCESS_KEY }}" \
         -var="secret_key=${{ secrets.AWS_SECRET_ACESS_KEY }}"
 
-    - name: Wait 🕑
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
-      uses: trstringer/manual-approval@v1
-      timeout-minutes: 5
+  destroy:
+    needs: 
+      - deploy
+    runs-on: ubuntu-latest
+    environment: production
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./terraform
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Setup Terraform 🤲
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.1.7"
     
     - name: Terraform Destroy 💣
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
