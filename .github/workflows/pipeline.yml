@@ -1,4 +1,4 @@
-name: PR
+name: PIPELINE
 
 on: [push]
 
@@ -94,5 +94,13 @@ jobs:
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
       run: |
         terraform apply -input=false -auto-approve \
+        -var="access_key=${{ secrets.AWS_ACCESS_KEY }}" \
+        -var="secret_key=${{ secrets.AWS_SECRET_ACESS_KEY }}"
+
+    - name: Terraform Destroy 💣
+      uses: trstringer/manual-approval@v1
+      timeout-minutes: 5
+      run: |
+        terraform destroy -input=false -auto-approve \
         -var="access_key=${{ secrets.AWS_ACCESS_KEY }}" \
         -var="secret_key=${{ secrets.AWS_SECRET_ACESS_KEY }}"
